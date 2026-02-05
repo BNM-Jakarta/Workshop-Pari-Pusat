@@ -114,12 +114,21 @@
         };
 
         function App() {
-            // URL SPREADSHEET TERBARU
+            // URL SPREADSHEET TERBARU YANG ANDA BERIKAN
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziA0Nd7y6iFyqvhnCPFj7wgYvpFzNyL1eUfJHwM4OHHwYXPvF2yUXJdNxwvjUhE_Qy/exec";
             const otherRef = useRef(null);
 
             const [formData, setFormData] = useState({
-                nama: '', hp: '', email: '', instansi: '', jabatan: '', kota: '', rencana_pengadaan: [], rencana_lainnya: ''
+                nama: '', 
+                hp: '', 
+                email: '', 
+                instansi: '', 
+                jabatan: '', 
+                kota: '', 
+                existing_radiology: '', 
+                existing_injector: '', 
+                rencana_pengadaan: [], 
+                rencana_lainnya: ''
             });
 
             const [status, setStatus] = useState('idle');
@@ -180,12 +189,12 @@
 
             if (status === 'success') {
                 return (
-                    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-100 text-center">
+                    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-100 text-center text-left">
                         <div className="bg-white w-full max-w-md p-10 rounded-[2.5rem] shadow-2xl border-t-[15px] border-[#002366] animate-in fade-in zoom-in duration-500">
                             <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner animate-bounce">
                                 <i className="fa-solid fa-check text-5xl"></i>
                             </div>
-                            <h2 className="text-4xl font-extrabold text-[#002366] mb-6 tracking-tight leading-tight uppercase">Terima Kasih!</h2>
+                            <h2 className="text-4xl font-extrabold text-[#002366] mb-6 tracking-tight leading-tight uppercase text-center">Terima Kasih!</h2>
                             <p className="text-slate-500 mb-10 font-medium text-center">Data presensi Anda telah tersimpan. Selamat mengikuti Workshop PARI Yogyakarta.</p>
                             <button onClick={() => window.location.reload()} className="w-full py-5 bg-[#002366] text-white rounded-2xl font-bold hover:bg-[#001a4d] transition-all uppercase tracking-widest font-bold">Kembali</button>
                         </div>
@@ -242,7 +251,7 @@
                     {/* Form Utama */}
                     <div className="w-full max-w-2xl form-card overflow-hidden border border-slate-100 relative shadow-2xl">
                         <div className="bg-[#002366] px-8 py-5 flex items-center justify-between">
-                            <span className="text-white text-[10px] font-bold tracking-widest uppercase flex items-center">
+                            <span className="text-white text-[10px] font-bold tracking-widest uppercase flex items-center text-left">
                                 <i className="fa-solid fa-id-card-clip mr-3 text-slate-400 text-lg"></i> Silakan Isi Data Tamu
                             </span>
                         </div>
@@ -256,12 +265,12 @@
                             )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Lengkap *</label>
                                     <input type="text" name="nama" required placeholder="Nama Lengkap" value={formData.nama} onChange={handleChange}
                                         className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none transition-all font-semibold text-slate-800 bg-white shadow-sm focus:border-[#002366]" />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">No. Handphone *</label>
                                     <div className="relative flex items-center">
                                         <span className="absolute left-5 font-bold text-[#002366]">+</span>
@@ -272,12 +281,12 @@
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Email</label>
                                     <input type="email" name="email" placeholder="email@anda.com" value={formData.email} onChange={handleChange}
                                         className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm focus:border-[#002366]" />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Instansi / Rumah Sakit *</label>
                                     <input type="text" name="instansi" required placeholder="Nama RS / PT" value={formData.instansi} onChange={handleChange}
                                         className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm focus:border-[#002366]" />
@@ -285,18 +294,56 @@
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Jabatan</label>
                                     <input type="text" name="jabatan" placeholder="Posisi Anda" value={formData.jabatan} onChange={handleChange}
                                         className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm focus:border-[#002366]" />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Kota</label>
                                     <input type="text" name="kota" placeholder="Asal Kota" value={formData.kota} onChange={handleChange}
                                         className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm focus:border-[#002366]" />
                                 </div>
                             </div>
 
+                            {/* Section: DATABASE PERALATAN RS */}
+                            <div className="pt-6 border-t border-slate-100">
+                                <label className="text-[11px] font-black text-slate-500 uppercase block mb-6 leading-relaxed tracking-wider text-left">
+                                    DATA PERALATAN RADIOLOGI SAAT INI <br/>
+                                    <span className="text-[9px] font-bold text-slate-400 tracking-normal">GUNA PEMBARUAN DATABASE DISTRIBUTOR KAMI</span>
+                                </label>
+                                
+                                <div className="space-y-6">
+                                    <div className="text-left">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 pl-1">
+                                            Alat Radiology / Cathlab yang tersedia (Merk & Tahun Instal)
+                                        </label>
+                                        <textarea 
+                                            name="existing_radiology" 
+                                            rows="2" 
+                                            placeholder="Contoh: CT Scan Siemens 2018, MRI GE 2020..." 
+                                            value={formData.existing_radiology} 
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none transition-all font-semibold text-slate-800 bg-slate-50/50 focus:bg-white focus:border-[#002366] resize-none" 
+                                        />
+                                    </div>
+                                    <div className="text-left">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 pl-1">
+                                            Apakah ada Injector CT/MRI/Cathlab? (Sebutkan Merk/Tipe & Tahun Instal)
+                                        </label>
+                                        <textarea 
+                                            name="existing_injector" 
+                                            rows="2" 
+                                            placeholder="Contoh: Injector Medrad Stellant 2019..." 
+                                            value={formData.existing_injector} 
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none transition-all font-semibold text-slate-800 bg-slate-50/50 focus:bg-white focus:border-[#002366] resize-none" 
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Section: Rencana Pengadaan 2026 */}
                             <div className="pt-6 border-t border-slate-100">
                                 <label className="text-[11px] font-black text-slate-500 uppercase block mb-6 leading-relaxed tracking-wider text-left">
                                     RENCANA PENGADAAN ALAT TAHUN 2026 <br/>
@@ -337,7 +384,7 @@
                             </button>
                         </form>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-bold tracking-[0.4em] uppercase mt-12 opacity-40">&copy; 2026 PT. Berca Niaga Medika</p>
+                    <p className="text-[10px] text-slate-400 font-bold tracking-[0.4em] uppercase mt-12 opacity-40 text-center">&copy; 2026 PT. Berca Niaga Medika</p>
                 </div>
             );
         }
@@ -346,4 +393,3 @@
     </script>
 </body>
 </html>
-
