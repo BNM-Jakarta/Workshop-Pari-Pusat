@@ -7,7 +7,7 @@
     <!-- Framework & Ikon -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- React, Babel & Animasi Confetti -->
+    <!-- Engine: React, Babel & Animasi -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -23,6 +23,7 @@
             overflow-x: hidden;
         }
 
+        /* Branding BNM */
         .bnm-logo-box { display: flex; flex-direction: column; align-items: center; }
         .bnm-line { width: 100%; height: 6px; background-color: #ED1C24; }
         .bnm-text { font-family: 'Arial Black', sans-serif; font-weight: 900; font-size: 2.8rem; color: #002366; line-height: 1; padding: 2px 4px; }
@@ -34,27 +35,28 @@
             border-radius: 2.5rem;
         }
 
-        @keyframes marquee-left {
+        /* Marquee Latar Belakang */
+        @keyframes marquee-flow {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
         .animate-marquee {
             display: flex;
             width: 200%;
-            animation: marquee-left 45s linear infinite;
+            animation: marquee-flow 45s linear infinite;
         }
 
-        @keyframes subtle-float {
+        @keyframes float-subtle {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(2deg); }
         }
-        .animate-subtle-float { animation: subtle-float 5s ease-in-out infinite; }
+        .animate-float-subtle { animation: float-subtle 5s ease-in-out infinite; }
 
-        .bg-animation-layer {
+        .bg-layer {
             pointer-events: none;
             user-select: none;
             z-index: -1;
-            opacity: 0.12;
+            opacity: 0.12; /* Kapasitas visual ditingkatkan */
         }
 
         .spinner {
@@ -74,46 +76,50 @@
     <script type="text/babel">
         const { useState, useRef } = React;
 
-        const MedicalGraphic = ({ name, color = "currentColor", size = 80 }) => {
-            const graphics = {
-                ct_scan: (
+        // Desain Ikon Radiologi Representatif
+        const RadiologyIcon = ({ type, color = "currentColor", size = 80 }) => {
+            const icons = {
+                ct: (
                     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
                         <circle cx="60" cy="50" r="45" stroke={color} strokeWidth="6" />
                         <circle cx="60" cy="50" r="30" stroke={color} strokeWidth="1" strokeDasharray="4 4" />
                         <rect x="20" y="70" width="80" height="6" rx="2" fill={color} />
+                        <rect x="35" y="76" width="50" height="10" rx="1" fill={color} opacity="0.4" />
                     </svg>
                 ),
-                mri_scan: (
+                mri: (
                     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
                         <rect x="25" y="15" width="70" height="80" rx="35" stroke={color} strokeWidth="8" />
                         <circle cx="60" cy="55" r="22" stroke={color} strokeWidth="2" />
                         <rect x="15" y="52" width="90" height="8" rx="4" fill={color} />
+                        <rect x="30" y="15" width="60" height="5" rx="2" fill={color} opacity="0.2" />
                     </svg>
                 ),
-                mammography: (
+                mamo: (
                     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
                         <rect x="58" y="10" width="6" height="95" rx="2" fill={color} />
                         <path d="M45 25 Q35 55 45 85" stroke={color} strokeWidth="6" fill="none" strokeLinecap="round" />
                         <rect x="40" y="55" width="40" height="15" rx="1" fill={color} opacity="0.6" />
+                        <rect x="40" y="45" width="40" height="3" fill="#ED1C24" />
                     </svg>
                 ),
-                xray_mobile: (
+                xray: (
                     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
                         <rect x="30" y="85" width="40" height="15" rx="3" fill={color} opacity="0.4" />
-                        <circle cx="40" cy="100" r="5" fill={color} />
-                        <circle cx="60" cy="100" r="5" fill={color} />
                         <rect x="45" y="25" width="6" height="65" fill={color} />
                         <path d="M45 35h25M70 30h15v10h-15z" fill={color} />
+                        <circle cx="40" cy="100" r="5" fill={color} />
+                        <circle cx="60" cy="100" r="5" fill={color} />
                     </svg>
                 )
             };
-            return graphics[name] || null;
+            return icons[type] || null;
         };
 
         function App() {
-            // URL GOOGLE APPS SCRIPT WORKSHOP PARI TERBARU
+            // URL SPREADSHEET TERBARU
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVwbpuyqf8plrjDfxD7tlkxIzxJ3oYrBVu0rYVDUCfxje_W8qbpNG6hXDf26a4QK0o/exec";
-            const otherInputRef = useRef(null);
+            const otherRef = useRef(null);
 
             const [formData, setFormData] = useState({
                 nama: '', hp: '', email: '', instansi: '', jabatan: '', kota: '', rencana_pengadaan: [], rencana_lainnya: ''
@@ -128,8 +134,19 @@
                 "LAMPU OPERASI", "VENTILATOR", "PENDANT", "TIDAK ADA", "TIDAK TAHU"
             ];
 
-            const fireConfetti = () => {
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 9999 });
+            const handleCheckbox = (alat) => {
+                const current = formData.rencana_pengadaan;
+                const isSelecting = !current.includes(alat);
+                
+                if (!isSelecting) {
+                    setFormData({ ...formData, rencana_pengadaan: current.filter(i => i !== alat) });
+                } else {
+                    setFormData({ ...formData, rencana_pengadaan: [...current, alat] });
+                    // Fokus ke Other jika pilih TIDAK TAHU
+                    if (alat === "TIDAK TAHU") {
+                        setTimeout(() => otherRef.current?.focus(), 100);
+                    }
+                }
             };
 
             const handleSubmit = async (e) => {
@@ -140,20 +157,11 @@
                     rencana_gabungan: [...formData.rencana_pengadaan, formData.rencana_lainnya].filter(x => x).join(", ")
                 };
                 try {
-                    await fetch(SCRIPT_URL, { 
-                        method: 'POST', 
-                        mode: 'no-cors', 
-                        headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify(finalData) 
-                    });
-                    
+                    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(finalData) });
                     setStatus('success');
-                    fireConfetti();
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                } catch (error) { 
-                    console.error("Error:", error);
-                    setStatus('error'); 
-                }
+                } catch (error) { setStatus('error'); }
             };
 
             const handleChange = (e) => {
@@ -165,20 +173,6 @@
                 setFormData({ ...formData, [name]: value });
             };
 
-            const handleCheckbox = (alat) => {
-                const current = formData.rencana_pengadaan;
-                const isSelecting = !current.includes(alat);
-                
-                if (!isSelecting) {
-                    setFormData({ ...formData, rencana_pengadaan: current.filter(i => i !== alat) });
-                } else {
-                    setFormData({ ...formData, rencana_pengadaan: [...current, alat] });
-                    if (alat === "TIDAK TAHU") {
-                        setTimeout(() => otherInputRef.current?.focus(), 100);
-                    }
-                }
-            };
-
             if (status === 'success') {
                 return (
                     <div className="min-h-screen flex items-center justify-center p-6 bg-slate-100">
@@ -186,31 +180,39 @@
                             <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner animate-bounce">
                                 <i className="fa-solid fa-check text-5xl"></i>
                             </div>
-                            <h2 className="text-4xl font-extrabold text-[#002366] mb-6 tracking-tight leading-tight uppercase text-center">Terima Kasih!</h2>
-                            <p className="text-slate-500 mb-10 font-medium text-center">Data presensi Anda telah tersimpan. Selamat mengikuti Workshop PARI Yogyakarta.</p>
-                            <button onClick={() => window.location.reload()} className="w-full py-5 bg-[#002366] text-white rounded-2xl font-bold hover:bg-[#001a4d] transition-all shadow-lg active:scale-95 uppercase tracking-widest font-bold">Kembali</button>
+                            <h2 className="text-4xl font-extrabold text-[#002366] mb-6 tracking-tight leading-tight uppercase">Terima Kasih!</h2>
+                            <p className="text-slate-500 mb-10 font-medium">Data presensi Anda telah tersimpan. Selamat mengikuti Workshop PARI Yogyakarta.</p>
+                            <button onClick={() => window.location.reload()} className="w-full py-5 bg-[#002366] text-white rounded-2xl font-bold hover:bg-[#001a4d] transition-all uppercase tracking-widest">Kembali</button>
                         </div>
                     </div>
                 );
             }
 
-            const isTidakTahuChecked = formData.rencana_pengadaan.includes("TIDAK TAHU");
+            const isRequiredOther = formData.rencana_pengadaan.includes("TIDAK TAHU");
+            const showcaseIcons = ['ct', 'mri', 'mamo', 'xray', 'ct', 'mri', 'mamo', 'xray'];
 
             return (
                 <div className="min-h-screen relative flex flex-col items-center py-10 px-4 md:py-16">
                     
-                    {/* Background Animation Marquee */}
-                    <div className="fixed inset-0 overflow-hidden bg-animation-layer flex flex-col justify-around">
+                    {/* Background Marquee Layer */}
+                    <div className="fixed inset-0 overflow-hidden bg-layer flex flex-col justify-around">
                         <div className="animate-marquee whitespace-nowrap">
-                            {['ct_scan', 'mri_scan', 'mammography', 'xray_mobile'].concat(['ct_scan', 'mri_scan', 'mammography', 'xray_mobile']).map((icon, i) => (
-                                <div key={i} className="inline-block mx-12 animate-subtle-float" style={{ animationDelay: `${i*0.5}s` }}>
-                                    <MedicalGraphic name={icon} color="#002366" size={85} />
+                            {showcaseIcons.concat(showcaseIcons).map((icon, i) => (
+                                <div key={i} className="inline-block mx-12 animate-float-subtle" style={{ animationDelay: `${i*0.4}s` }}>
+                                    <RadiologyIcon type={icon} color="#002366" size={75} />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="animate-marquee whitespace-nowrap" style={{ animationDirection: 'reverse', animationDuration: '55s' }}>
+                            {showcaseIcons.concat(showcaseIcons).map((icon, i) => (
+                                <div key={i} className="inline-block mx-16 animate-float-subtle" style={{ animationDelay: `${i*0.7}s` }}>
+                                    <RadiologyIcon type={icon} color="#ED1C24" size={60} />
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Header Logo BNM */}
+                    {/* Branding */}
                     <div className="flex flex-col items-center mb-10 animate-in fade-in slide-in-from-top duration-700 w-full max-w-2xl relative">
                         <div className="flex items-center space-x-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-6">
                             <div className="bnm-logo-box">
@@ -218,12 +220,12 @@
                                 <div className="bnm-text">BNM</div>
                                 <div className="bnm-line"></div>
                             </div>
-                            <div className="font-extrabold text-[#002366] text-sm md:text-base uppercase tracking-tight max-w-[150px] leading-tight ml-4 text-left">
+                            <div className="font-extrabold text-[#002366] text-sm md:text-base uppercase tracking-tight max-w-[150px] leading-tight ml-4">
                                 PT. Berca Niaga Medika
                             </div>
                         </div>
                         <div className="text-center">
-                            <h1 className="text-2xl font-black text-[#002366] uppercase tracking-wider mb-1 text-center">Buku Tamu Workshop</h1>
+                            <h1 className="text-2xl font-black text-[#002366] uppercase tracking-wider mb-1">Buku Tamu Workshop</h1>
                             <div className="flex items-center justify-center space-x-2 text-red-500 font-bold uppercase tracking-[0.25em] text-xs">
                                 <span>PARI PUSAT</span>
                                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
@@ -232,11 +234,11 @@
                         </div>
                     </div>
 
-                    {/* Form Card */}
+                    {/* Form Utama */}
                     <div className="w-full max-w-2xl form-card overflow-hidden border border-slate-100 relative shadow-2xl">
                         <div className="bg-[#002366] px-8 py-5 flex items-center justify-between">
                             <span className="text-white text-[10px] font-bold tracking-widest uppercase flex items-center">
-                                <i className="fa-solid fa-id-card-clip mr-3 text-red-500 text-lg"></i> Silakan Isi Data Tamu
+                                <i className="fa-solid fa-id-card-clip mr-3 text-red-500 text-lg"></i> Registrasi Tamu Workshop
                             </span>
                         </div>
                         
@@ -244,22 +246,22 @@
                             {status === 'error' && (
                                 <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-xs font-bold animate-pulse flex items-center">
                                     <i className="fa-solid fa-triangle-exclamation mr-2"></i>
-                                    Gagal mengirim! Pastikan admin menutup dialog/sel di Spreadsheet.
+                                    Gagal mengirim! Cek koneksi atau pastikan sel di Spreadsheet tidak terblokir.
                                 </div>
                             )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Lengkap *</label>
-                                    <input type="text" name="nama" required placeholder="Nama Sesuai ID" value={formData.nama} onChange={handleChange}
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none transition-all font-semibold text-slate-800 bg-white shadow-sm" />
+                                    <input type="text" name="nama" required placeholder="Nama Lengkap" value={formData.nama} onChange={handleChange}
+                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none transition-all font-semibold text-slate-800 bg-white" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">No. Handphone *</label>
                                     <div className="relative flex items-center">
                                         <span className="absolute left-5 font-bold text-[#002366]">+</span>
                                         <input type="tel" name="hp" required placeholder="62812xxxxxxxx" value={formData.hp} onChange={handleChange}
-                                            className="w-full pl-9 pr-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm" />
+                                            className="w-full pl-9 pr-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white" />
                                     </div>
                                 </div>
                             </div>
@@ -267,13 +269,13 @@
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Email</label>
-                                    <input type="email" name="email" placeholder="email@instansi.com" value={formData.email} onChange={handleChange}
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm" />
+                                    <input type="email" name="email" placeholder="email@anda.com" value={formData.email} onChange={handleChange}
+                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Instansi / Rumah Sakit *</label>
                                     <input type="text" name="instansi" required placeholder="Nama RS / PT" value={formData.instansi} onChange={handleChange}
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm" />
+                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white" />
                                 </div>
                             </div>
 
@@ -281,20 +283,20 @@
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Jabatan</label>
                                     <input type="text" name="jabatan" placeholder="Posisi Anda" value={formData.jabatan} onChange={handleChange}
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm" />
+                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Kota</label>
                                     <input type="text" name="kota" placeholder="Asal Kota" value={formData.kota} onChange={handleChange}
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white shadow-sm" />
+                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 outline-none font-semibold text-slate-800 bg-white" />
                                 </div>
                             </div>
 
                             <div className="pt-6 border-t border-slate-100">
                                 <label className="text-[11px] font-black text-slate-500 uppercase block mb-6 leading-relaxed tracking-wider text-left">
                                     RENCANA PENGADAAN ALAT TAHUN 2026 <br/>
-                                    <span className={`text-[9px] font-bold ${isTidakTahuChecked ? 'text-blue-600 animate-pulse' : 'text-red-500'}`}>
-                                        {isTidakTahuChecked ? 'Sebutkan alat yang mungkin Anda cari pada kolom di bawah ini:' : 'SILAKAN PILIH ALAT YANG DICARI:'}
+                                    <span className={`text-[9px] font-bold ${isRequiredOther ? 'text-blue-600 animate-pulse' : 'text-red-500'}`}>
+                                        {isRequiredOther ? 'Sebutkan alat yang sedang Anda cari pada kolom di bawah ini:' : 'SILAKAN PILIH ALAT YANG DICARI:'}
                                     </span>
                                 </label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
@@ -308,18 +310,18 @@
                                         </div>
                                     ))}
                                     
-                                    <div className={`flex items-center p-3 rounded-xl border transition-all sm:col-span-2 shadow-sm ${isTidakTahuChecked ? 'border-red-500 bg-red-50 ring-2 ring-red-100' : 'border-slate-100 bg-white'}`}>
-                                        <span className={`text-[10px] font-black uppercase tracking-widest mr-3 ${isTidakTahuChecked ? 'text-red-600' : 'text-slate-400'}`}>Other:</span>
+                                    <div className={`flex items-center p-3 rounded-xl border transition-all sm:col-span-2 shadow-sm ${isRequiredOther ? 'border-red-500 bg-red-50 ring-2 ring-red-100' : 'border-slate-100 bg-white'}`}>
+                                        <span className={`text-[10px] font-black uppercase tracking-widest mr-3 ${isRequiredOther ? 'text-red-600' : 'text-slate-400'}`}>Other:</span>
                                         <input 
-                                            ref={otherInputRef}
+                                            ref={otherRef}
                                             type="text" 
-                                            required={isTidakTahuChecked}
-                                            placeholder={isTidakTahuChecked ? "Wajib diisi jika memilih Tidak Tahu..." : "Sebutkan alat lainnya..."} 
+                                            required={isRequiredOther}
+                                            placeholder={isRequiredOther ? "Tuliskan alat yang dicari di sini..." : "Sebutkan alat lainnya..."} 
                                             value={formData.rencana_lainnya} 
                                             onChange={(e) => setFormData({ ...formData, rencana_lainnya: e.target.value })}
-                                            className="w-full bg-transparent border-b border-slate-200 focus:border-[#002366] outline-none text-[10px] font-bold uppercase py-1 placeholder:text-slate-300" 
+                                            className="w-full bg-transparent border-b border-slate-200 focus:border-[#002366] outline-none text-[10px] font-bold uppercase py-1" 
                                         />
-                                        {isTidakTahuChecked && <i className="fa-solid fa-asterisk text-red-500 text-[8px] ml-2"></i>}
+                                        {isRequiredOther && <i className="fa-solid fa-asterisk text-red-500 text-[8px] ml-2 animate-bounce"></i>}
                                     </div>
                                 </div>
                             </div>
